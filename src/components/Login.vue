@@ -44,8 +44,42 @@ export default {
             error: null,
         };
     },
+    // mounted() {
+    //     // Optional: Check if PlayFab is loaded (for development sanity)
+    //     if (typeof PlayFab === 'undefined' || 
+    //         typeof PlayFabClient === 'undefined') 
+    //     {
+    //         console.error('PlayFab SDK not loaded! Check public/index.html');
+    //         this.message = 'Error: PlayFab SDK not loaded.';
+    //     } 
+    //     else {
+    //     console.log('PlayFab SDK is available!');
+    //     // You could move PlayFab.settings.titleId here if you prefer component-level init,
+    //     // but setting it in public/index.html is generally more robust for global access.
+    //     }
+    // },
     methods: {
         handleLogin() {
+            var loginRequest = {
+                TitleId: PlayFab.settings.titleId,
+                CustomId: "test",
+                CreateAccount: true,
+            };
+
+            PlayFabClientSDK.LoginWithCustomID(loginRequest, (error, result) =>
+            {
+                if (error === null) 
+                {
+                    console.error('PlayFab Login Error:', error);
+                    this.message = 
+                        `Login failed: ${error.errorMessage || JSON.stringify(error)}`;
+                } 
+                else 
+                {
+                    console.log('PlayFab Login Success:', result);
+                    this.message = 'Login successful!';
+                }
+            });
             // Clear previous error
             this.error = null;
 
@@ -56,11 +90,6 @@ export default {
             }
 
             // Simulate an API request (replace with real API logic)
-            const mockApiResponse = {
-                success: true, // Set to false to simulate error
-                message: 'Login successful',
-            };
-
             // if (mockApiResponse.success) {
             //     this.$router.push('/dashboard'); // Redirect to dashboard
             // } else {
